@@ -1,6 +1,6 @@
 'use strict';
 
-const {app, BrowserWindow} = require('electron')
+const {app,shell, BrowserWindow} = require('electron')
 const {Menu, Tray} = require('electron')
 const path = require('path')
 const url = require('url')
@@ -25,13 +25,19 @@ function createWindow () {
     })
   win.loadURL('https://exmail.qq.com/cgi-bin/loginpage')
   win.center()
-  win.on('closed', () => {
+  win.on('close', (e) => {
     // win.hide();
-    win = null;
-  })
-  win.webContents.on('did-finish-load',(event,url)=>{
-    console.log('load'+url);
-  })
+    if (win.isVisible()) {
+        e.preventDefault();
+        win.hide();
+      }
+    }
+  )
+  win.webContents.on('new-window', (event, url) => {
+      event.preventDefault();
+      shell.openExternal(url);
+    });
+
 }
 function toggle(){
     if (win.isVisible()) {
