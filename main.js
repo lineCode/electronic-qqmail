@@ -1,12 +1,13 @@
 'use strict';
 
 const {app,shell, BrowserWindow} = require('electron')
-const {Menu, Tray} = require('electron')
+const {Menu, Tray, nativeImage} = require('electron')
 const path = require('path')
 const url = require('url')
 const {ipcMain} = require('electron')
 
-
+let trayIcon = nativeImage.createFromPath(path.join(__dirname,`./image/Email_Chat.png`));
+let trayIconUnread = nativeImage.createFromPath(path.join(__dirname,'./image/Email_Chat_un.png'));
 let win
 
 function createWindow () {
@@ -60,7 +61,7 @@ app.on('activate', () => {
 let appIcon = null
 app.on('ready', () => {
   createWindow()
-  appIcon = new Tray('./image/Email_Chat.png')
+  appIcon = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
     {label: 'show',click:() => {toggle() }},
     {label: 'exit',click: () => { app.exit(0); }}
@@ -71,11 +72,11 @@ let lastcount='unhas';
 ipcMain.on('has-un-count-tray',(event, arg) => {
   //console.log(arg)  // prints "ping"
   if(arg=='has'&&arg!=lastcount){
-    appIcon.setImage('./image/Email_Chat_un.png')
+    appIcon.setImage(trayIconUnread)
     lastcount='has'
   }
   if(arg=='unhas'&& arg!=lastcount){
-    appIcon.setImage('./image/Email_Chat.png')
+    appIcon.setImage(trayIcon)
     lastcount='unhas'
   }
 })

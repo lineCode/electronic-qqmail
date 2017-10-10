@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Electronic QQmail
+Icon=Email_Chat.png
+Path=/home/zhangyatong/github/electronic-qqmail/electronic-qqmail-linux-x64
+Exec=/home/zhangyatong/github/electronic-qqmail/electronic-qqmail-linux-x64/electronic-qqmail
+StartupNotify=false
+StartupWMClass=electronic-qqmail
+OnlyShowIn=Unity;
+X-UnityGenerated=true
+Name[zh_CN]=electronic-qqmail

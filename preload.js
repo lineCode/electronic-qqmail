@@ -26,6 +26,12 @@ class Injector{
           ipcRenderer.send('has-un-count-tray','unhas')
         }
     }, 1000*2);  
+    setInterval(function(){
+      var notify_content = document.querySelector('#webpushtip1 > div > div.notify_content').innerHTML
+          if(notify_content){
+              console.log(notify_content);
+          }
+    },1000*2);
   }
 }
 
