@@ -62,7 +62,7 @@ app.on('ready', () => {
   createWindow()
   appIcon = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
-    {label: 'show',click:() => {win.hide();win.show(); }},
+    {label: 'show',click:() => {win.show(); }},
     {label: 'exit',click: () => { app.exit(0); }}
   ])
   appIcon.setContextMenu(contextMenu)
