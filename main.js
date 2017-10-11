@@ -11,9 +11,8 @@ let trayIconUnread = nativeImage.createFromPath(path.join(__dirname,'./image/Ema
 let win
 
 function createWindow () {
-
   win = new BrowserWindow({
-    width: 1024, 
+    width: 1024,
     height: 660,
     icon:'./Email_Chat.png',
     webPreferences:{
@@ -63,7 +62,7 @@ app.on('ready', () => {
   createWindow()
   appIcon = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
-    {label: 'show',click:() => {toggle() }},
+    {label: 'show',click:() => {win.hide();win.show(); }},
     {label: 'exit',click: () => { app.exit(0); }}
   ])
   appIcon.setContextMenu(contextMenu)
