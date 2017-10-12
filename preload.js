@@ -47,27 +47,27 @@ class Injector {
         var hsahstr = hash(title + msg)
         if (!hashset.contains(hsahstr)) {
           // console.log(entities.decode(title));
-          notifier.notify({
-            title : entities.decode(title),
-            message : entities.decode(msg).substr(0, 20) + '...',
-            icon : path.join(
-                __dirname,
-                './image/new2.png'), // Absolute path (doesn't work on balloons)
-            // sound: true, // Only Notification Center or Windows Toasters
-            wait : true // Wait with callback, until user action is taken
-                        // against notification
-          });
-
-          notifier.on('click', function(notifierObject, options) {
-            // Triggers if `wait: true` and user clicks notification
-            console.log('click' + notifierObject + options);
-          });
-
-          notifier.on('timeout', function(notifierObject, options) {
-            // Triggers if `wait: true` and notification closes
-            console.log('timeout' + notifierObject + options);
-            hashset.remove(hsahstr)
-          });
+          notifier
+              .notify({
+                title : entities.decode(title),
+                message : entities.decode(msg).substr(0, 20) + '...',
+                icon : path.join(__dirname,
+                                 './image/new2.png'), // Absolute path (doesn't
+                                                      // work on balloons)
+                sound : true, // Only Notification Center or Windows Toasters
+                wait : true   // Wait with callback, until user action is taken
+                              // against notification
+              })
+              .on('click',
+                  function(notifierObject, options) {
+                    // Triggers if `wait: true` and user clicks notification
+                    console.log('click' + notifierObject + options);
+                  })
+              .on('timeout', function(notifierObject, options) {
+                // Triggers if `wait: true` and notification closes
+                console.log('timeout' + notifierObject + options);
+                hashset.remove(hsahstr)
+              });
           hashset.add(hsahstr)
         }
       }
