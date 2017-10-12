@@ -79,3 +79,6 @@ ipcMain.on('has-un-count-tray',(event, arg) => {
     lastcount='unhas'
   }
 })
+ipcMain.on('tips',(event,arg) => {
+  appIcon.setToolTip(arg)
+})

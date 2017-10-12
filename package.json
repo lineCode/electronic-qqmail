@@ -3,6 +3,10 @@
   "version": "0.1.1",
   "main": "main.js",
   "dependencies": {
-    "electron": "^1.7.8"
+    "electron": "^1.7.8",
+    "node-notifier":"^5.1.2",
+    "js-hash-code":"^1.0.0",
+    "hashset":"^0.0.6",
+    "html-entities":"^1.2.1"
   }
 }
