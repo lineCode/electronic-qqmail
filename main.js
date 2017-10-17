@@ -48,13 +48,17 @@ function createWindow() {
           console.log(targetUrl);
           event.preventDefault();
           shell.openExternal(targetUrl);
+          return;
         }
       }
+      if (pathname == '/cgi-bin/readmail' || pathname == '/cgi-bin/download') {
+        return;
+      }
     }
-    else {
-      event.preventDefault();
-      shell.openExternal(targetUrl);
-    }
+
+    event.preventDefault();
+    shell.openExternal(url);
+
   });
 }
 function toggle() {
