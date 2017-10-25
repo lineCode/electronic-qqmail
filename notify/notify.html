@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="notify.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <script src="vue.js"></script>
+</head>
+
+<body style="overflow: hidden;">
+    <div id="webpushtipcontainer" class="webpushtipoutter">
+        <div class="webpushtipinner">
+            <div id="webpushtip1" style="visibility: visible; bottom: 0px;" class="newmailNotifyItem notify_mail" v-on:click="clickNotify">
+                <div class="newmailNotify"><a nocheck="true" id="webpushtip1close" class="notify_close" v-on:click="closeNotify" href="javascript:void(0);" title="关闭"></a>
+                    <div class="notify_type"><span></span>
+                        <label><em>{{count}}</em></label>
+                    </div>
+                    <div class="notify_content">
+                        <p class="notify_account">{{accountName}} <span class="addrtitle notify_accountmail">{{account}}</span></p>
+                        <p class="notify_title">{{title}}</p>
+                        <p class="notify_digest">{{digest}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+const { ipcRenderer } = require('electron')
+var app = new Vue({
+    el: '#webpushtip1',
+    data: {
+        title: '',
+        count: 0,
+        accountName: '',
+        account: '',
+        title: '',
+        digest: ''
+    },
+    methods: {
+        closeNotify: function(event) {
+            ipcRenderer.send('close-notify', '');
+        },
+        clickNotify: function(event) {
+            ipcRenderer.send('click-notify', '');
+        }
+    }
+})
+ipcRenderer.on('initContent', function(event, arg) {
+    app.title = arg.title;
+    app.count = arg.count;
+    app.accountName = arg.accountName;
+    app.account = arg.account;
+    app.digest = arg.digest
+});
+</script>
+
+</html>

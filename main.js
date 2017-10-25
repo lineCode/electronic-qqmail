@@ -6,6 +6,7 @@ const path = require('path')
 const { URL, URLSearchParams } = require('url');
 const { ipcMain } = require('electron')
 const mailNotify = require('./notify/notify.js')
+const hash = require('js-hash-code');
 
 let trayIcon =
     nativeImage.createFromPath(path.join(__dirname, `./image/Email_Chat.png`));
@@ -97,7 +98,15 @@ app.on('ready', () => {
                 app.exit(0);
             }
         },
-        // { label: 'notify', click: () => { new mailNotify().show() } },
+        // {
+        //     label: 'notify',
+        //     click: () => {
+        //         new mailNotify({ title: 'test333333', digest: 'snlaalskjfklsjl', count: 100, accountName: 'name', account: 'aaa' })
+        //             .click(function() { console.log('main.click') ;win.show()})
+        //             .timeout(function() { console.log('main.timeout') }, 1000 * 2)
+        //             .show()
+        //     }
+        // },
     ])
     appIcon.setContextMenu(contextMenu)
 })
@@ -114,3 +123,17 @@ ipcMain.on('has-un-count-tray', (event, arg) => {
     }
 })
 ipcMain.on('tips', (event, arg) => { appIcon.setToolTip(arg) })
+ipcMain.on('newEMail_notify', function(event, arg) {
+    console.log('newEMail_notify start'+arg)
+    new mailNotify(arg)
+        .click(function() {
+            console.log('click-main');
+            event.sender.send('click_notify_main')
+            win.show()
+        })
+        .timeout(function() {
+            event.sender.send('timeout_notify_main',hash(arg.title + arg.digest))
+        }, 1000 * 10)
+        .show()
+        console.log('newEMail_notify end')
+})
