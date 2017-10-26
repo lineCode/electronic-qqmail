@@ -6,8 +6,8 @@ qq企业邮箱的桌面版客户端
 > + 未读邮件标记
 
 ## 安装
-```Bash  
-    npm install electron -g  
+```Bash
+    npm install electron -g
     electron .
 ```
 ## 支持
