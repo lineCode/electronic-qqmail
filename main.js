@@ -1,6 +1,6 @@
 'use strict';
 
-const { app, shell, BrowserWindow } = require('electron')
+const { app, shell, BrowserWindow, globalShortcut } = require('electron')
 const { Menu, Tray, nativeImage } = require('electron')
 const path = require('path')
 const { URL, URLSearchParams } = require('url');
@@ -109,6 +109,12 @@ app.on('ready', () => {
         // },
     ])
     appIcon.setContextMenu(contextMenu)
+    globalShortcut.register('Esc', () => {
+        win.hide()
+    })
+    globalShortcut.register('CommandOrControl+Alt+q', () => {
+        toggle()
+    })
 })
 let lastcount = 'unhas';
 ipcMain.on('has-un-count-tray', (event, arg) => {
@@ -124,7 +130,7 @@ ipcMain.on('has-un-count-tray', (event, arg) => {
 })
 ipcMain.on('tips', (event, arg) => { appIcon.setToolTip(arg) })
 ipcMain.on('newEMail_notify', function(event, arg) {
-    console.log('newEMail_notify start'+arg)
+    console.log('newEMail_notify start' + arg)
     new mailNotify(arg)
         .click(function() {
             console.log('click-main');
@@ -132,8 +138,8 @@ ipcMain.on('newEMail_notify', function(event, arg) {
             win.show()
         })
         .timeout(function() {
-            event.sender.send('timeout_notify_main',hash(arg.title + arg.digest))
+            event.sender.send('timeout_notify_main', hash(arg.title + arg.digest))
         }, 1000 * 10)
         .show()
-        console.log('newEMail_notify end')
+    console.log('newEMail_notify end')
 })
