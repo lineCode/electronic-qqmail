@@ -5,6 +5,9 @@ qq企业邮箱的桌面版客户端
 ![](image/screenshot.png "截图")
 > + 新邮件推送提醒
 > + 未读邮件标记
+> + 快捷键
+    - esc隐藏  
+    - ctrl+alt+q 显示/隐藏
 
 ## 安装
 ```Bash

@@ -1,12 +1,12 @@
 {
   "name": "electronic-qqmail",
-  "version": "0.1.2",
+  "version": "0.1.2.1",
   "main": "main.js",
   "dependencies": {
     "electron": "^1.7.8",
-    "node-notifier":"^5.1.2",
-    "js-hash-code":"^1.0.0",
-    "hashset":"^0.0.6",
-    "html-entities":"^1.2.1"
+    "electron-dl": "^1.10.0",
+    "hashset": "^0.0.6",
+    "html-entities": "^1.2.1",
+    "js-hash-code": "^1.0.0",
   }
 }
