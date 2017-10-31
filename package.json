@@ -8,5 +8,6 @@
     "hashset": "^0.0.6",
     "html-entities": "^1.2.1",
     "js-hash-code": "^1.0.0",
+    "electron-localshortcut":"^2.0.2"
   }
 }
