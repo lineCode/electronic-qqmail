@@ -8,14 +8,23 @@
     <title>选择</title>
     <style>
     img:hover   {color:red;transform: scale(1.05, 1.05);}
-    img{margin:10px;cursor:pointer;}
+    img{margin:10px;cursor:pointer;-webkit-app-region: no-drag}
     div {align:left;width:310px;height:140px;}
     </style>
   </head>
-  <body>
+  <body style="-webkit-app-region: drag">
     <div class="" style="">
-      <img src="../image/QQ_Email_Chat.png" style="width:120px;"/>
-      <img src="../image/Email_Chat.png" style="width:140px;"/>
+      <img src="../image/QQ_Email_Chat.png" style="width:120px;" onclick="showQQ()"/>
+      <img src="../image/Email_Chat.png" style="width:140px;" onclick="showEX()"/>
     </div>
   </body>
 </html>
+<script type="text/javascript">
+const { ipcRenderer } = require('electron')
+function showQQ(){
+  ipcRenderer.send('qqmail-show')
+}
+function showEX(){
+  ipcRenderer.send('exmail-show')
+}
+</script>
