@@ -4,9 +4,10 @@ const {shell, BrowserWindow, globalShortcut} = require('electron')
 const {nativeImage} = require('electron')
 const path = require('path')
 const {URL, URLSearchParams} = require('url');
-const {ipcMain} = require('electron')
+const {ipcMain, ipcRenderer} = require('electron')
 const mailNotify = require('../notify/notify.js')
 const hash = require('js-hash-code');
+const {main} = require('../main.js');
 
 let trayIcon =
     nativeImage.createFromPath(path.join(__dirname, `./image/Email_Chat.png`));
@@ -14,9 +15,23 @@ let trayIconUnread = nativeImage.createFromPath(
     path.join(__dirname, './image/Email_Chat_un.png'));
 let qqmailUrl = 'https://mail.qq.com/cgi-bin/loginpage';
 let exmailUrl = 'https://exmail.qq.com/cgi-bin/loginpage'
-
-function qqMail() { new MailWin(qqmailUrl) }
-function exMail() { new MailWin(exmailUrl) }
+let qq = null;
+let qqMail = function() {
+  if (qq == null) {
+    qq = new MailWin(qqmailUrl)
+  } else {
+    qq.show()
+  }
+};
+let ex = null;
+let exMail =
+    function() {
+  if (ex == null) {
+    ex = new MailWin(exmailUrl)
+  } else {
+    ex.show()
+  }
+}
 
 class MailWin {
   constructor(url) {
@@ -25,14 +40,13 @@ class MailWin {
     this.initEvent();
     this.initIpc();
     this.globalShortcut();
-    this.mainApp = MainApp;
   }
 
   createWindow() {
     this.win = new BrowserWindow({
       width : 1024,
       height : 660,
-      icon : './Email_Chat.png',
+      icon : '../image/Email_Chat.png',
       show : false,
       webPreferences : {
         javascript : true,
@@ -45,8 +59,8 @@ class MailWin {
   }
   loadURL(url) { this.win.loadURL(url); }
   globalShortcut() {
-    globalShortcut.register('Esc', () => {win.hide()})
-    globalShortcut.register('CommandOrControl+Alt+q', () => {toggle()})
+    globalShortcut.register('Esc', () => {this.hide()})
+    globalShortcut.register('CommandOrControl+Alt+q', () => {this.toggle()})
   }
   initEvent() {
     this.win.on('close', (e) => {
@@ -55,7 +69,7 @@ class MailWin {
         this.win.hide();
       }
     });
-    this.win.once('ready-to-show', () => {win.show()});
+    this.win.once('ready-to-show', () => {this.show()});
     this.win.webContents.on('new-window', (event, url) => {
       console.log(url);
       let myURL = new URL(url);
@@ -102,19 +116,17 @@ class MailWin {
     ipcMain.on('has-un-count-tray', (event, arg) => {
       // console.log(arg)  // prints "ping"
       if (arg == 'has' && arg != lastcount) {
-        this.mainApp.updateIcon(trayIconUnread)
+        main.updateIcon(trayIconUnread)
         lastcount = 'has'
       }
       if (arg == 'unhas' && arg != lastcount) {
-        this.mainApp.updateIcon(trayIcon)
+        event.sender.send('updateIcon', trayIcon)
         lastcount = 'unhas'
       }
     });
     ipcMain.on('newEMail_notify', function(event, arg) {
-      console.log('newEMail_notify start' + arg);
       new mailNotify(arg)
           .click(function() {
-            console.log('click-main');
             event.sender.send('click_notify_main');
             this.win.show()
           })
@@ -125,11 +137,12 @@ class MailWin {
               },
               1000 * 20)
           .show()
-      console.log('newEMail_notify end')
     })
   }
 }
 
-module.exports = MailWin;
-module.exports = qqMail;
-module.exports = exMail;
+module.exports = {
+  MailWin,
+  exMail,
+  qqMail
+};

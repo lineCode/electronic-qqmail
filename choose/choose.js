@@ -2,10 +2,11 @@
 mail:181958825@qq.com
 */
 'use strict';
-const {BrowserWindow, ipcMain} = require('electron')
+const electron = require('electron')
+const ipcMain = electron.ipcMain
+const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const {qqMail, exMail} = require('../mail/mail.js')
-const {electron} = require('electron')
 
 class ChooseWin {
   constructor() {
@@ -15,6 +16,7 @@ class ChooseWin {
   }
   createWindow() {
     this.win = new BrowserWindow({
+      icon : '../image/Email_Chat.png',
       width : this.width,
       height : this.height,
       alwaysOnTop : true,
@@ -30,6 +32,12 @@ class ChooseWin {
       this.center();
       this.win.show();
     });
+    this.win.on('close', (e) => {
+      if (this.win.isVisible()) {
+        e.preventDefault();
+        this.win.hide();
+      }
+    });
   }
   center() {
     let display = electron.screen.getPrimaryDisplay();
@@ -39,18 +47,30 @@ class ChooseWin {
     let left = workArea.x;
     let top = workArea.y;
 
-    let x = left / 2 + this.width / 2;
-    let y = top / 2 + this.height / 2;
+    let x = left + width / 2 - this.width / 2;
+    let y = top + height / 2 - this.height / 2;
     this.win.setPosition(x, y)
   }
-  show() { this.createWindow(); }
+  show() {
+    if (this.win == null) {
+      this.createWindow();
+    } else {
+      this.win.show()
+    }
+    return this
+  }
   hide() { this.win.hide() }
-  choseQQMail() { qqMail() }
-  chooseEXMail() { exMail() }
+  moveTray() { this.hide() }
   initEvent() {
-    let that = this;
-    ipcMain.on('qqmail-show', function() { that.chooseQQMail() });
-    ipcMain.on('exmail-show', function() { that.chooseEXMail() });
+    ipcMain.on('click-icon', (event, arg) => {
+      if (arg == 'qqmail-show') {
+        qqMail();
+      }
+      if (arg == 'exmail-show') {
+        exMail()
+      }
+      this.moveTray()
+    });
   }
 }
 

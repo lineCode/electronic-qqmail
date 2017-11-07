@@ -10,31 +10,29 @@ const hash = require('js-hash-code');
 const chooseWin = require('./choose/choose.js')
 
 class MainApp {
-  constructor() { this.initEvent(); }
+  constructor() {
+    this.initEvent();
+    this.chooseWin = new chooseWin();
+  }
   initEvent() {
     app.on('activate', () => {
       if (win === null) {
-        new chooseWin().show()
+        this.chooseWin.show()
       }
     });
     app.on('ready', () => {
       console.log('ready');
-      new chooseWin().show();
-      this.initTray()
-    })
+      this.chooseWin.show();
+      this.initTray();
+    });
   };
 
   initTray() {
     this.appIcon = new Tray(nativeImage.createFromPath(
         path.join(__dirname, `./image/Email_Chat.png`)))
     const contextMenu = Menu.buildFromTemplate([
-      {label : 'show', click : () => { win.show(); }}, {
-        label : 'exit',
-        click : () => {
-          clear()
-          app.exit(0);
-        }
-      },
+      {label : 'show', click : () => { this.chooseWin.show(); }},
+      {label : 'exit', click : () => { app.exit(0); }},
       // {
       //     label: 'notify',
       //     click: () => {
@@ -52,5 +50,6 @@ class MainApp {
 
   updateIcon(image) { this.appIcon.setImage(image) }
 }
+let main = new MainApp()
 
-new MainApp()
+module.exports = {main};

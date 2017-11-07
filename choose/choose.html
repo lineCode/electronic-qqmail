@@ -14,17 +14,14 @@
   </head>
   <body style="-webkit-app-region: drag">
     <div class="" style="">
-      <img src="../image/QQ_Email_Chat.png" style="width:120px;" onclick="showQQ()"/>
-      <img src="../image/Email_Chat.png" style="width:140px;" onclick="showEX()"/>
+      <img src="../image/QQ_Email_Chat.png" style="width:120px;" onclick="clickIcon('qqmail-show')"/>
+      <img src="../image/Email_Chat.png" style="width:140px;" onclick="clickIcon('exmail-show')"/>
     </div>
   </body>
 </html>
 <script type="text/javascript">
 const { ipcRenderer } = require('electron')
-function showQQ(){
-  ipcRenderer.send('qqmail-show')
-}
-function showEX(){
-  ipcRenderer.send('exmail-show')
+function clickIcon(icon){
+  ipcRenderer.send('click-icon',icon)
 }
 </script>
