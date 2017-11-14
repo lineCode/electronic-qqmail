@@ -8,9 +8,10 @@
   "repository": "https://github.com/qq181958825/electronic-qqmail",
   "dependencies": {
     "electron": "^1.7.8",
-    "node-notifier": "^5.1.2",
-    "js-hash-code": "^1.0.0",
+    "electron-dl":"^1.10.0",
     "hashset": "^0.0.6",
-    "html-entities": "^1.2.1"
+    "html-entities": "^1.2.1",
+    "js-hash-code": "^1.0.0",
+    "electron-localshortcut":"^2.0.2"
   }
 }

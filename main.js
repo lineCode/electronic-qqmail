@@ -1,12 +1,6 @@
 'use strict';
 
-const {app, shell, BrowserWindow, globalShortcut} = require('electron')
-
-const path = require('path')
-const {URL, URLSearchParams} = require('url');
-const {ipcMain} = require('electron')
-const mailNotify = require('./notify/notify.js')
-const hash = require('js-hash-code');
+const {app} = require('electron')
 const chooseWin = require('./choose/choose.js')
 
 class MainApp {

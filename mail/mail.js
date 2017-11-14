@@ -7,6 +7,8 @@ const { URL, URLSearchParams } = require('url');
 const { ipcMain } = require('electron')
 const hash = require('js-hash-code');
 const mailNotify = require('../notify/notify.js')
+const {download} = require('electron-dl');
+const electronLocalshortcut = require('electron-localshortcut');
 
 let config = {
     exmail: {
@@ -56,7 +58,7 @@ class MailWin {
         this.initEvent();
         this.initIpc();
         this.initTray()
-        this.globalShortcut();
+        this.shortcut();
     }
 
     createWindow() {
@@ -75,8 +77,11 @@ class MailWin {
         });
     }
     loadURL(url) { this.win.loadURL(url); }
-    globalShortcut() {
+    shortcut() {
         globalShortcut.register(this.option.shortcut, () => { this.toggle() })
+        electronLocalshortcut.register(this.win, 'Esc', () => {
+            this.hide();
+          });
     }
     initEvent() {
         this.win.on('close', (e) => {
@@ -104,6 +109,10 @@ class MailWin {
                 }
                 if (pathname == '/cgi-bin/readmail' ||
                     pathname == '/cgi-bin/download') {
+                    download(BrowserWindow.getFocusedWindow(), url,
+                         {openFolderWhenDone : true})
+                    .then(dl => console.log(dl.getSavePath()))
+                    .catch(console.error);
                     return;
                 }
             }
