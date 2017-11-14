@@ -117,6 +117,7 @@ class MailWin {
         const contextMenu = Menu.buildFromTemplate([
             { label: 'show', click: () => { this.show(); } },
             { label: 'exit', click: () => { this.destroy() } },
+            // {label:'notify',click:()=>{new mailNotify({title:'test'}).click(()=>{}).show()}}
         ]);
         this.appIcon.setContextMenu(contextMenu)
     }
@@ -155,12 +156,12 @@ class MailWin {
         });
         ipcMain.on('new-email-notify' + this.win.id, (event, arg) => {
             new mailNotify(arg)
-                .click(function() {
+                .click(() => {
                     event.sender.send('new-email-notify-click' + this.win.id)
                     this.show()
                 })
                 .timeout(
-                    function() {
+                    () =>{
                         event.sender.send('new-email-notify-click' + this.win.id, hash(arg.title + arg.digest))
                     },
                     1000 * 20)

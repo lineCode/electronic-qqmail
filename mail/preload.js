@@ -24,8 +24,10 @@ class Injector {
             while (tmp) {
                 // console.log();
                 var text = tmp.textContent
-                if (text.indexOf('(') > -1 && text.indexOf('我的文件夹') < 0 &&
-                    text.indexOf('草稿箱') < 0) {
+                if (text.indexOf('(') > -1 && 
+                    text.indexOf('我的文件夹') < 0 &&
+                    text.indexOf('草稿箱') < 0 &&
+                    text.indexOf('阅读空间') < 0) {
                     list.push(text)
                 }
                 tmp = tobj.iterateNext()
