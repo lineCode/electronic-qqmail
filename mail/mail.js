@@ -1,18 +1,17 @@
 'user strict';
 
-const {shell, BrowserWindow, globalShortcut} = require('electron')
-const {nativeImage} = require('electron')
+const {shell, BrowserWindow,Tray, globalShortcut} = require('electron')
+const {Menu,  nativeImage} = require('electron')
 const path = require('path')
 const {URL, URLSearchParams} = require('url');
 const {ipcMain, ipcRenderer} = require('electron')
 const mailNotify = require('../notify/notify.js')
 const hash = require('js-hash-code');
-const {main} = require('../main.js');
 
 let trayIcon =
-    nativeImage.createFromPath(path.join(__dirname, `./image/Email_Chat.png`));
+    nativeImage.createFromPath(path.join(__dirname, `../image/Email_Chat.png`));
 let trayIconUnread = nativeImage.createFromPath(
-    path.join(__dirname, './image/Email_Chat_un.png'));
+    path.join(__dirname, '../image/Email_Chat_un.png'));
 let qqmailUrl = 'https://mail.qq.com/cgi-bin/loginpage';
 let exmailUrl = 'https://exmail.qq.com/cgi-bin/loginpage'
 let qq = null;
@@ -39,6 +38,7 @@ class MailWin {
     this.loadURL(url);
     this.initEvent();
     this.initIpc();
+    this.initTray()
     this.globalShortcut();
   }
 
@@ -59,7 +59,6 @@ class MailWin {
   }
   loadURL(url) { this.win.loadURL(url); }
   globalShortcut() {
-    globalShortcut.register('Esc', () => {this.hide()})
     globalShortcut.register('CommandOrControl+Alt+q', () => {this.toggle()})
   }
   initEvent() {
@@ -96,6 +95,16 @@ class MailWin {
       shell.openExternal(url);
     });
   }
+  initTray() {
+    this.appIcon = new Tray(trayIcon)
+    const contextMenu = Menu.buildFromTemplate([
+      {label : 'show', click : () => { this.show(); }},
+      {label : 'exit', click : () => { this.destroy() }},
+    ]);
+    this.appIcon.setContextMenu(contextMenu)
+  }
+
+  updateIcon(image) { this.appIcon.setImage(image) }
   toggle() {
     if (this.win.isVisible()) {
       this.win.hide();
@@ -109,35 +118,22 @@ class MailWin {
     this.win.webContents.session.clearStorageData(
         function() { console.log('clearStorageData'); });
   }
-  show() { this.win.show() }
+  destroy(){this.win.destroy();this.appIcon.setContextMenu(null)}
+  show() { this.win.show();}
   hide() { this.win.hide() }
   initIpc() {
     let lastcount = 'unhas';
-    ipcMain.on('has-un-count-tray', (event, arg) => {
+    ipcMain.on('has-un-count-tray'+this.win.id, (event, arg) => {
       // console.log(arg)  // prints "ping"
       if (arg == 'has' && arg != lastcount) {
-        main.updateIcon(trayIconUnread)
+        this.updateIcon(trayIconUnread)
         lastcount = 'has'
       }
       if (arg == 'unhas' && arg != lastcount) {
-        event.sender.send('updateIcon', trayIcon)
+        this.updateIcon(trayIcon)
         lastcount = 'unhas'
       }
     });
-    ipcMain.on('newEMail_notify', function(event, arg) {
-      new mailNotify(arg)
-          .click(function() {
-            event.sender.send('click_notify_main');
-            this.win.show()
-          })
-          .timeout(
-              function() {
-                event.sender.send('timeout_notify_main',
-                                  hash(arg.title + arg.digest))
-              },
-              1000 * 20)
-          .show()
-    })
   }
 }
 

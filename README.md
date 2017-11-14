@@ -8,8 +8,14 @@ qq企业邮箱的桌面版客户端
 
 ## 安装
 ```Bash
-    npm install electron -g
-    electron .
+    # Clone this repository
+    git clone https://github.com/qq181958825/electronic-qqmail
+    # Go into the repository
+    cd electronic-qqmail
+    # Install dependencies
+    npm install
+    # Run the app
+    npm start
 ```
 ## 支持
 cczzbbdd@qq.com

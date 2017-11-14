@@ -22,6 +22,7 @@ class Notify {
       resizable : false,
       show : false,
       frame : false,
+      focusable:false,
       transparent : true,
       acceptFirstMouse : true,
       webPreferences : {
