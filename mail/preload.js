@@ -1,14 +1,16 @@
 'use strict';
 
-const { ipcRenderer , remote,BrowserWindow} = require('electron')
+const { ipcRenderer, remote, BrowserWindow } = require('electron')
 const path = require('path')
 const hash = require('js-hash-code');
 const HashSet = require('hashset');
 const Entities = require('html-entities').AllHtmlEntities
+const mailNotify = require('../notify/notify.js')
 
 let hashset = new HashSet();
 const entities = new Entities();
 const winId = remote.getCurrentWindow().id;
+let lastcount = 'unhas';
 class Injector {
     init() {
         // console.log('console.log(preload.js);'+new Date().getTime());
@@ -28,14 +30,21 @@ class Injector {
                 }
                 tmp = tobj.iterateNext()
             }
-            // console.log(list);
-            if (list.length > 0) {
-                ipcRenderer.send('has-un-count-tray'+winId, 'has')
-            } else {
-                ipcRenderer.send('has-un-count-tray'+winId, 'unhas')
+            if (list.length > 0 && lastcount == 'unhas') {
+                console.log(winId + ',has');
+                ipcRenderer.send('has-un-count-tray' + winId, 'has')
+                lastcount = 'has'
+            }
+            if (list.length == 0 && lastcount == 'has') {
+                console.log(winId + ',unhas');
+                ipcRenderer.send('has-un-count-tray' + winId, 'unhas')
+                lastcount = 'unhas'
             }
         }, 1000 * 2);
         setInterval(function() {
+            if (document.querySelector('#webpushtip1 > div > div.notify_content') == null) {
+                return;
+            }
             var notify_content =
                 document.querySelector('#webpushtip1 > div > div.notify_content')
                 .innerHTML
@@ -64,21 +73,19 @@ class Injector {
                         count: countstr,
                         account: accountstr,
                     }
-                    new mailNotify(arg)
-                        .click(function() {
-                            document.querySelector('.newmailNotify').click()
-                            BrowserWindow.fromId(winId).show()
-                        })
-                        .timeout(
-                            function() {
-                                hashset.remove(hash(arg.title + arg.digest));
-                            },
-                            1000 * 20)
-                        .show()
+                    ipcRenderer.send('new-email-notify' + winId, arg)
+
                     hashset.add(hsahstr)
                 }
             }
         }, 1000 * 2);
+
+        ipcRenderer.on('new-email-notify-click'+winId, (event, arg) => {
+            document.querySelector('.newmailNotify').click()
+        })
+        ipcRenderer.on('new-email-notify-timeout'+winId, (event, arg) => {
+            hashset.remove(arg)
+        })
     }
 }
 
