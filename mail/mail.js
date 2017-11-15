@@ -95,7 +95,7 @@ class MailWin {
             console.log(url);
             let myURL = new URL(url);
             let hostname = myURL.hostname
-            if (hostname == 'exmail.qq.com') {
+            if (hostname.endsWith('mail.qq.com')) {
                 let pathname = myURL.pathname
                 if (pathname == '/cgi-bin/mail_spam') {
                     let action = myURL.searchParams.get('action')
@@ -173,7 +173,7 @@ class MailWin {
                     () =>{
                         event.sender.send('new-email-notify-click' + this.win.id, hash(arg.title + arg.digest))
                     },
-                    1000 * 20)
+                    1000 * 45)
                 .show()
         })
     }
