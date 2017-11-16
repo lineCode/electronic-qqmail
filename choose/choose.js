@@ -92,7 +92,6 @@ class ChooseWin {
             }
             this.moveTray()
         });
-        
     }
 }
 
