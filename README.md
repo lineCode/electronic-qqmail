@@ -31,8 +31,12 @@ qq企业邮箱的桌面版客户端
 
 ## 版本
 
-### v0.1.4(coding)
-+ 优化细节
+### v1.0.0(coding)
++ build package
++  deb ,exe , xos
+
+### v0.1.4()
++ add docky icon
 
 ### v0.1.3
 + 添加个人邮箱的支持

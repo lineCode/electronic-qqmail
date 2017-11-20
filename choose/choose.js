@@ -6,8 +6,13 @@ const electron = require('electron')
 const ipcMain = electron.ipcMain
 const BrowserWindow = electron.BrowserWindow
 const globalShortcut = electron.globalShortcut
+const nativeImage = electron.nativeImage
+const Menu = electron.Menu
+const Tray = electron.Tray
 const path = require('path')
 const { qqMail, exMail } = require('../mail/mail.js')
+const { app } = require('electron')
+const electronLocalshortcut = require('electron-localshortcut');
 
 class ChooseWin {
     constructor() {
@@ -40,6 +45,19 @@ class ChooseWin {
                 this.win.hide();
             }
         });
+        this.initTray()
+        electronLocalshortcut.register(this.win, 'Esc', () => {
+            this.hide();
+        });
+    }
+    initTray() {
+        this.appIcon = new Tray(nativeImage.createFromPath(path.join(__dirname, '../image/docky.png')))
+        const contextMenu = Menu.buildFromTemplate([
+            { label: 'show', click: () => { this.show(); } },
+            { label: 'exit', click: () => { app.exit() } },
+            // {label:'notify',click:()=>{new mailNotify({title:'test'}).click(()=>{}).show()}}
+        ]);
+        this.appIcon.setContextMenu(contextMenu)
     }
     center() {
         let display = electron.screen.getPrimaryDisplay();
